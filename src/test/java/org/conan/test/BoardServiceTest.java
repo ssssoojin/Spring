@@ -43,7 +43,7 @@ public class BoardServiceTest {
 	}
 	@Test
 	public void testGet() {
-		log.info(service.get(6L).getTitle());
+		log.info(service.get(7L).getTitle());
 	}
 	@Test
 	public void testDelete() {
@@ -51,7 +51,7 @@ public class BoardServiceTest {
 	}
 	@Test
 	public void testUpdate() {
-		BoardVO board = service.get(6L);
+		BoardVO board = service.get(4L);
 		if(board==null) {return;}
 		board.setTitle("제목 수정 from Service");
 		log.info("MODIFY RESULT : "+service.modify(board));
