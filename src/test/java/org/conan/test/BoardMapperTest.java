@@ -25,6 +25,7 @@ public class BoardMapperTest {
 		}
 		
 		@Test
+		//게시글 추가
 		public void testInsert() {
 			BoardVO board = new BoardVO();
 			board.setTitle("새로 작성하는 글");
@@ -35,8 +36,15 @@ public class BoardMapperTest {
 		}
 		
 		@Test
+		//게시물 조회
 		public void testRead() {
 			BoardVO board = mapper.read(5L);
 			log.info(board);
+		}
+		
+		@Test
+		//게시물 삭제
+		public void testDelete() {
+			log.info("DELETE COUNT : "+mapper.delete(5L));
 		}
 }
