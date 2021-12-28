@@ -35,4 +35,13 @@ public class BoardControllerTest {
 		log.info(
 				mockMvc.perform(MockMvcRequestBuilders.get("/board/list")).andReturn().getModelAndView().getModelMap());
 	}
+	@Test
+	public void testRegister() throws Exception{
+		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/register")
+				.param("title", "test from controller")
+				.param("content", "test from controller")
+				.param("writer", "user0000"))
+				.andReturn().getModelAndView().getViewName();
+		log.info(resultPage);
+	}
 }
