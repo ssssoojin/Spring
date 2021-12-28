@@ -21,6 +21,7 @@
   update tbl_board
   set title=#{title},
   content=#{content},
+  writer=#{writer},
   updateDate=now()
   where bno=#{bno}
   </update>
