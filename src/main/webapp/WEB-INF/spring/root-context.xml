@@ -8,8 +8,9 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<context:component-scan
-		base-package="org.conan.sample"></context:component-scan>
+ 	<context:component-scan
+		base-package="org.conan.*"></context:component-scan> 
+	
 
 
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
@@ -26,10 +27,12 @@
 		destroy-method="close">
 		<constructor-arg ref="hikariConfig"></constructor-arg>
 	</bean>
-	
-	<bean id ="sqlSessionFactory"
+
+	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
-		</bean>
-	<mybatis-spring:scan base-package="org.conan.*"/>
+	</bean>
+	<mybatis-spring:scan base-package="org.conan.persistence" />
+	
+
 </beans>
