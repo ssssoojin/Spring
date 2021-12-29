@@ -32,10 +32,10 @@ public class BoardController {
 		rttr.addFlashAttribute("result",board.getBno()); //result로 번호 보내주기
 		return "redirect:/board/list"; //redirect:를 하지 않는 경우, 새로고침시 도배
 	}
-	@GetMapping({"/get","/modify"})
+	@GetMapping({"/get", "/modify"})
 	public void get(@RequestParam("bno") Long bno, Model model) {
 		log.info("/get or modify");
-		model.addAttribute("board",service.get(bno));
+		model.addAttribute("board", service.get(bno));
 	}
 	@PostMapping("/modify")
 	public String get(BoardVO board, RedirectAttributes rttr) {
