@@ -19,7 +19,9 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Override
 	public void register(BoardVO board) {
-		mapper.insert(board);
+		log.info("register...."+board);
+		mapper.insertSelectKey(board);
+
 	}
 
 	@Override
@@ -45,5 +47,6 @@ public class BoardServiceImpl implements BoardService {
 		log.info("getList.........");
 		return mapper.getList();
 	}
+	
 
 }

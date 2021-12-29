@@ -36,7 +36,7 @@ public class BoardServiceTest {
 	@Test
 	public void testRegister() {
 		BoardVO board =new BoardVO();
-		board.setTitle("새글 새글 새글 from Service");
+		board.setTitle("새글 from Service");
 		board.setContent("세 내용 세 내용 from Service");
 		board.setWriter("newbie");
 		service.register(board);
@@ -48,7 +48,7 @@ public class BoardServiceTest {
 	}
 	@Test
 	public void testDelete() {
-		log.info("REMOVE RESULT :"+service.remove(6L));
+		log.info("REMOVE RESULT :"+service.remove(29L));
 	}
 	@Test
 	public void testUpdate() {

@@ -29,11 +29,12 @@ public class BoardController {
 	public String register(BoardVO board, RedirectAttributes rttr) {
 		log.info("register : "+ board);
 		service.register(board);
-		return "redirect:/board/list";
+		rttr.addFlashAttribute("result",board.getBno()); //result로 번호 보내주기
+		return "redirect:/board/list"; //redirect:를 하지 않는 경우, 새로고침시 도배
 	}
-	@GetMapping("/get")
+	@GetMapping({"/get","/modify"})
 	public void get(@RequestParam("bno") Long bno, Model model) {
-		log.info("/get");
+		log.info("/get or modify");
 		model.addAttribute("board",service.get(bno));
 	}
 	@PostMapping("/modify")

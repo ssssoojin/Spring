@@ -59,4 +59,15 @@ public class BoardMapperTest {
 			int count=mapper.update(board);
 			log.info("UPDATE COUNT : "+count);
 		}
+		
+		@Test
+		//게시글 추가 후 게시글 번호 가져오기(insert와 다른점은 bno값을 가져온다는 점)
+		public void testInsertSelectKey() {
+			BoardVO board = new BoardVO();
+			board.setTitle("새로 작성하는 글");
+			board.setContent("새로 작성하는 내용");
+			board.setWriter("newbie");
+			mapper.insertSelectKey(board);
+			log.info(board);
+		}
 }
