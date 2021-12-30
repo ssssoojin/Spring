@@ -1,6 +1,8 @@
 package org.conan.controller;
 
 import org.conan.domain.BoardVO;
+import org.conan.domain.Criteria;
+import org.conan.domain.PageDTO;
 import org.conan.service.BoardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +23,13 @@ public class BoardController {
 	private BoardService service;
 	
 	@GetMapping("/list")
-	public void list(Model model) {
-		log.info("list");
-		model.addAttribute("list",service.getList());
+	public void list(Criteria cri,Model model) {
+		/*
+		 * log.info("list"); model.addAttribute("list",service.getList());
+		 */
+		log.info("list : "+cri);
+		model.addAttribute("list",service.getList(cri));
+		model.addAttribute("pageMaker",new PageDTO(cri, 126));
 	}
 	@PostMapping("/register")
 	public String register(BoardVO board, RedirectAttributes rttr) {

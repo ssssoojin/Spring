@@ -3,12 +3,13 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
+<title>Get</title>
 <%@include file="../includes/header.jsp"%>
 <script src="http://code.jquery.com/jquery-latest.js"></script> <!-- 푸터에 있음 -->
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">등록 수정</h1>
+			<h1 class="page-header">BOARD GET</h1>
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
@@ -16,7 +17,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">DataTables Advanced Tables</div>
+				<div class="panel-heading">Board Get (게시글 조회)</div>
 				<!-- /.panel-heading -->
 				<div class="panel-body">
 

@@ -2,8 +2,8 @@ package org.conan.persistence;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Select;
 import org.conan.domain.BoardVO;
+import org.conan.domain.Criteria;
 
 public interface BoardMapper {
 	//@Select("select * from tbl_board where bno>0")
@@ -13,4 +13,5 @@ public interface BoardMapper {
 	public int delete(long bno);
 	public int update(BoardVO board);
 	public void insertSelectKey(BoardVO board);
+	public List<BoardVO> getListWithPaging(Criteria cri);
 }

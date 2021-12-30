@@ -1,7 +1,10 @@
 package org.conan.test;
 
 
+import java.util.List;
+
 import org.conan.domain.BoardVO;
+import org.conan.domain.Criteria;
 import org.conan.persistence.BoardMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,5 +72,12 @@ public class BoardMapperTest {
 			board.setWriter("newbie");
 			mapper.insertSelectKey(board);
 			log.info(board);
+		}
+		
+		@Test
+		public void testPaging() {
+			Criteria cri = new Criteria(4,3);
+			List<BoardVO> list = mapper.getListWithPaging(cri);
+			list.forEach(board -> log.info(board));
 		}
 }

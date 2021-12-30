@@ -4,13 +4,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html lang="en">
+<title>Modify</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script> <!-- 푸터에 있음 -->
 <%@include file="../includes/header.jsp"%>
 <%@include file="../includes/footer.jsp"%>
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">Board Read</h1>
+			<h1 class="page-header">BOARD MODIFY</h1>
 		</div>
 		<!-- /.col-lg-12 -->
 	</div>
@@ -18,7 +19,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">게시글 조회</div>
+				<div class="panel-heading">Board Modify (게시글 수정)</div>
 				<!-- /.panel-heading -->
 				<div class="panel-body">
 					<form role="form" action="/board/modify" method="post">
