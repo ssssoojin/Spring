@@ -5,7 +5,8 @@
 <html lang="en">
 <title>Get</title>
 <%@include file="../includes/header.jsp"%>
-<script src="http://code.jquery.com/jquery-latest.js"></script> <!-- 푸터에 있음 -->
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<!-- 푸터에 있음 -->
 <div id="page-wrapper">
 	<div class="row">
 		<div class="col-lg-12">
@@ -22,29 +23,39 @@
 				<div class="panel-body">
 
 					<div class="form-group">
-						<label>Bno</label><input class="form-control" name="bno" value='<c:out value="${board.bno}"/>'readonly="readonly">
+						<label>Bno</label><input class="form-control" name="bno"
+							value='<c:out value="${board.bno}"/>' readonly="readonly">
 					</div>
 					<div class="form-group">
-						<label>Title</label><input class="form-control" name="title" value='<c:out value="${board.title}"/>'readonly="readonly">
+						<label>Title</label><input class="form-control" name="title"
+							value='<c:out value="${board.title}"/>' readonly="readonly">
 						<%-- <label>Title</label><input class="form-control" name="title" value="${board.title}"/> --%>
 					</div>
 					<div class="form-group">
 						<label>Content</label>
-						<textarea class="form-control" name="content" rows="3" readonly="readonly">${board.content}</textarea>
+						<textarea class="form-control" name="content" rows="3"
+							readonly="readonly">${board.content}</textarea>
 					</div>
 					<div class="form-group">
-						<label>Writer</label><input class="form-control" name="writer" value='<c:out value="${board.writer}"/>'readonly="readonly">
+						<label>Writer</label><input class="form-control" name="writer"
+							value='<c:out value="${board.writer}"/>' readonly="readonly">
 					</div>
-					
+
 					<%-- <button data-oper="modify" class="btn btn-default" onclick="location.href='/board/modify?bno=<c:out value="${board.bno}"/>'">Modify</button>
 					<button data-oper="list" class="btn btn-default" onclick="location.href='/board/list'">List</button> --%>
 
-			
-					<button data-oper='modify' class="btn btn-outline btn-primary">Modify</button>
-                  <button data-oper='list' class="btn btn-outline btn-success">List</button>
-                  <form id="operForm" action="/board/modify" method="get">
-                     <input type="hidden" id="bno" name="bno" value='<c:out value="${board.bno}"/>'>
-                  </form>
+
+					<!-- <button data-oper='modify' class="btn btn-outline btn-primary">Modify</button>
+                  <button data-oper='list' class="btn btn-outline btn-success">List</button> -->
+					<form id='operForm' action="/board/modify" method="get">
+						<input type="hidden" id="bno" name="bno" value="${board.bno}">
+						<input type="hidden" name="pageNum" value="${cri.pageNum}">
+						<input type="hidden" name="amount" value="${cri.amount}">
+						<button data-oper="modify" class="btn btn-outline btn-primary btn-sm">Modify</button>
+						<button data-oper="list" class="btn btn-outline btn-info btn-sm">List</button>
+					</form>
+
+
 
 				</div>
 				<!-- /.table-responsive -->

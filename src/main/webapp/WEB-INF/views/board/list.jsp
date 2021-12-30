@@ -23,7 +23,7 @@
 				<div class="panel-heading">
 					Board List (게시글 목록)
 					<button id="regBtn" type="button"
-						class="btn btn-outline btn-success btn-xs pull-right">글쓰기</button>
+						class="btn btn-primary btn-xs pull-right">글 작성하기</button>
 				</div>
 
 				<!-- /.panel-heading -->
@@ -83,6 +83,7 @@
 						</ul>
 					</div>
 					<!-- Paging End -->
+					
 
 					<form id='actionForm' action="/board/list" method='get'>
 						<input type='hidden' name='pageNum'
@@ -156,7 +157,7 @@
 
 	$(".move").on("click", function(e) {
 		e.preventDefault();
-		actionForm.append("<input type='hidden' name='bno' value='"$(this).attr("href") + "'>");
+		actionForm.append("<input type='hidden' name='bno' value='"+$(this).attr("href") + "'>");
 		actionForm.attr("action", "/board/get");
 		actionForm.submit();
 	});
