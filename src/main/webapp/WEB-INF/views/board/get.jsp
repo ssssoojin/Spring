@@ -40,6 +40,7 @@
 						<label>Writer</label><input class="form-control" name="writer"
 							value='<c:out value="${board.writer}"/>' readonly="readonly">
 					</div>
+					
 
 					<%-- <button data-oper="modify" class="btn btn-default" onclick="location.href='/board/modify?bno=<c:out value="${board.bno}"/>'">Modify</button>
 					<button data-oper="list" class="btn btn-default" onclick="location.href='/board/list'">List</button> --%>
@@ -51,6 +52,10 @@
 						<input type="hidden" id="bno" name="bno" value="${board.bno}">
 						<input type="hidden" name="pageNum" value="${cri.pageNum}">
 						<input type="hidden" name="amount" value="${cri.amount}">
+						<input type="hidden" name="type" value="${cri.type}">
+						<input type="hidden" name="keyword" value="${cri.keyword}">
+					</form>
+						
 						<button data-oper="modify" class="btn btn-outline btn-primary btn-sm">Modify</button>
 						<button data-oper="list" class="btn btn-outline btn-info btn-sm">List</button>
 					</form>

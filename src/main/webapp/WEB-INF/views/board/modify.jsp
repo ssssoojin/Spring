@@ -26,6 +26,8 @@
 					<form role="form" action="/board/modify" method="post">
 						<input type="hidden" name="pageNum" value="${cri.pageNum}">
 						<input type="hidden" name="amount" value="${cri.amount}">
+						<input type="hidden" name="type" value="${cri.type}">
+						<input type="hidden" name="keyword" value="${cri.keyword}">
 
 						<div class="form-group">
 							<label>Bno</label><input class="form-control" name="bno"
@@ -55,6 +57,7 @@
 								value='<fmt:formatDate value="${board.updateDate}" pattern="yyyy/MM/dd"/>'
 								readonly="readonly">
 						</div>
+
 
 						<button type="submit" data-oper="modify" class="btn btn-info">Modify</button>
 						<button type="submit" data-oper="remove" class="btn btn-danger">Remove</button>
@@ -95,10 +98,16 @@
 		      
 		      var pageNumTag = $("input[name='pageNum']").clone(); //잠시 보관용
 		      var amountTag = $("input[name='amount']").clone();
+		      var keywordTag = $("input[name='keyword']").clone(); 
+		      var typeTag = $("input[name='type']").clone(); 
 		      
 		      formObj.empty(); //제거
 		      
-		      formObj.append(pageNumTag);formObj.append(amountTag); //필요한 태그들만 추가
+		      formObj.append(pageNumTag); //필요한 태그들만 추가
+		      formObj.append(amountTag);
+		      formObj.append(keywordTag);  
+		      formObj.append(typeTag); 
+		      
 			formObj.submit();
 		});
 	});
