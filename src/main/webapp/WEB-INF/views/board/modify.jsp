@@ -26,8 +26,8 @@
 					<form role="form" action="/board/modify" method="post">
 						<input type="hidden" name="pageNum" value="${cri.pageNum}">
 						<input type="hidden" name="amount" value="${cri.amount}">
-						<input type="hidden" name="type" value="${cri.type}">
-						<input type="hidden" name="keyword" value="${cri.keyword}">
+						<input type="hidden" name="type" value="${cri.type}"> <input
+							type="hidden" name="keyword" value="${cri.keyword}">
 
 						<div class="form-group">
 							<label>Bno</label><input class="form-control" name="bno"
@@ -79,6 +79,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var formObj = $("form");
+		
 		$('button').on("click", function(e) {
 			e.preventDefault();
 			var operation = $(this).data("oper");
@@ -87,27 +88,26 @@
 				formObj.attr("action", "/board/remove");
 			} else if (operation === 'list') {
 				formObj.attr("action", "/board/list").attr("method", "get");
-				formObj.empty();
-			
-			//수정/삭제 취소 후, 목록 페이지로 이동
-			//pageNum 과 amount 만 사용하므로,
-			//<form> 태그에서 필요한 부분만 잠시 복사(clone) 해서 보관해 두고, 
-			//<form> 태그 안에 내용은 지워(empty)버립니다.
-			//이후에 다시 필요한 태그들만 추가해서 '/board/list' 를 호출
-		      formObj.attr("action", "/board/list").attr("method","get");
-		      
-		      var pageNumTag = $("input[name='pageNum']").clone(); //잠시 보관용
-		      var amountTag = $("input[name='amount']").clone();
-		      var keywordTag = $("input[name='keyword']").clone(); 
-		      var typeTag = $("input[name='type']").clone(); 
-		      
-		      formObj.empty(); //제거
-		      
-		      formObj.append(pageNumTag); //필요한 태그들만 추가
-		      formObj.append(amountTag);
-		      formObj.append(keywordTag);  
-		      formObj.append(typeTag); 
-		}
+
+				//수정/삭제 취소 후, 목록 페이지로 이동
+				//pageNum 과 amount 만 사용하므로,
+				//<form> 태그에서 필요한 부분만 잠시 복사(clone) 해서 보관해 두고, 
+				//<form> 태그 안에 내용은 지워(empty)버립니다.
+				//이후에 다시 필요한 태그들만 추가해서 '/board/list' 를 호출
+				formObj.attr("action", "/board/list").attr("method", "get");
+
+				var pageNumTag = $("input[name='pageNum']").clone(); //잠시 보관용
+				var amountTag = $("input[name='amount']").clone();
+				var keywordTag = $("input[name='keyword']").clone();
+				var typeTag = $("input[name='type']").clone();
+
+				formObj.empty(); //제거
+
+				formObj.append(pageNumTag); //필요한 태그들만 추가
+				formObj.append(amountTag);
+				formObj.append(keywordTag);
+				formObj.append(typeTag);
+			}
 			formObj.submit();
 		});
 	});
