@@ -24,4 +24,11 @@
       set reply = #{reply},updatedate = current_timestamp
       where rno = #{rno}
    </update>
+   
+   <select id="getListWithPaging" resultType="org.conan.domain.ReplyVO">
+       select  rno, bno, reply, replyer, replydate, updatedate
+       from tbl_reply
+       where bno =  #{bno}          
+       limit #{cri.pageStart},#{cri.amount}
+   </select>
 </mapper>

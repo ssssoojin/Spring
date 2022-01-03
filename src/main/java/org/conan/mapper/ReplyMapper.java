@@ -1,5 +1,9 @@
 package org.conan.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.conan.domain.Criteria;
 import org.conan.domain.ReplyVO;
 
 public interface ReplyMapper {
@@ -8,5 +12,8 @@ public interface ReplyMapper {
 	public ReplyVO read(Long bno);
 	public int delete(Long bno);
 	public int update(ReplyVO reply);
+	public List<ReplyVO> getListWithPaging (
+			@Param("cri") Criteria cri,
+			@Param("bno") Long bno);
 
 }
