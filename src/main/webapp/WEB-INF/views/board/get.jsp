@@ -76,8 +76,50 @@
 <!-- /#page-wrapper -->
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(){
 		console.log(replyService);
+		var bnoValue='<c:out value="${board.bno}"/>';
+		
+		/* //댓글 등록 테스트(replyService)
+		replyService.add(
+				{reply: "JS Test", replyer:"tester", bno:bnoValue} //댓글 데이터
+				,function(result) {
+					alert("RESULT : " + result);
+				}
+		); */
+		/* 
+		//게시글 조회할 때마다 댓글 추가 확인
+		replyService.getList({bno:bnoValue, page:1}, function(list) {
+			for(var i=0, len=list.length || 0; i<len; i++) {
+				console.log(list[i]);
+			}
+		}); */
+		
+		//댓글 삭제 테스트(replyService)
+		/* replyService.remove(3, function(count) {
+			console.log(count);
+			if(count==="success") {
+				alert("REMOVED");
+			}
+		}, function(err) {
+			alert('ERROR....');
+		}); */
+	/* 	
+		//댓글 수정 테스트(replyService)
+		replyService.update({
+			rno:11,
+			bno: bnoValue,
+			reply: "js Modified Reply...."
+		}, function(result) {
+			alert("수정 완료");
+		}); */
+		
+		//특정 댓글 조회 테스트(replyService)
+		replyService.get(11, function(data) {
+		console.log(data);
+		});
+		</script>
+	<script type="text/javascript">
+	$(document).ready(function(){
 		var operForm = $("#operForm");
 		$('button[data-oper="modify"]').on("click",function(e){
 			operForm.attr("action","/board/modify").submit();
