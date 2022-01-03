@@ -88,7 +88,7 @@
 			} else if (operation === 'list') {
 				formObj.attr("action", "/board/list").attr("method", "get");
 				formObj.empty();
-			}
+			
 			//수정/삭제 취소 후, 목록 페이지로 이동
 			//pageNum 과 amount 만 사용하므로,
 			//<form> 태그에서 필요한 부분만 잠시 복사(clone) 해서 보관해 두고, 
@@ -107,7 +107,7 @@
 		      formObj.append(amountTag);
 		      formObj.append(keywordTag);  
 		      formObj.append(typeTag); 
-		      
+		}
 			formObj.submit();
 		});
 	});
