@@ -17,7 +17,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ReplyMapperTest {
 	 @Setter(onMethod_ = @Autowired)
-	   private ReplyMapper mapper;
+	 private ReplyMapper mapper;
 	
 	 @Test
 	 public void testMapper() {
@@ -33,5 +33,25 @@ public class ReplyMapperTest {
 			vo.setReplyer("replyer" + i);
 			mapper.insert(vo);
 		});
+	}
+	
+	@Test
+	public void testRead() {
+		Long targetRno = 5L;
+		ReplyVO vo = mapper.read(targetRno);
+		log.info(vo);
+	}
+	@Test
+	public void testDelete() {
+		Long targetRno = 1L;
+		mapper.delete(targetRno);
+	}
+	@Test
+	public void testUpdate() {
+		Long targetRno = 10L;
+		ReplyVO vo = mapper.read(targetRno);
+		vo.setReply("Update Reply");
+		int count = mapper.update(vo);
+		log.info("Update Count : "+count);
 	}
 }
