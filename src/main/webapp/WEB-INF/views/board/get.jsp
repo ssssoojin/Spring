@@ -69,10 +69,12 @@
 		<div class="col-lg-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-				<i class= "fa fa-comments fa-fw"></i>Reply <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
-			</div>
+					<i class="fa fa-comments fa-fw"></i>Reply
+					<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New
+						Reply</button>
+				</div>
 				<!-- /.panel-heading -->
-				
+
 				<div class="panel-body">
 					<ul class="chat">
 						<!-- start reply -->
@@ -90,50 +92,53 @@
 					<!--  ./end ul -->
 				</div>
 				<!-- /.row -->
+				<div class="panel-footer">
+					<div></div>
 				</div>
+				<!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+					aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&times;</button>
+								<h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
+							</div>
+							<div class="modal-body">
+								<div class="form-group">
+									<label>Reply</label> <input class="form-control" name="reply"
+										value="New Reply!!!">
+								</div>
+								<div class="form-group">
+									<label>Replyer</label> <input class="form-control"
+										name="replyer" value="replyer">
+								</div>
+								<div class="form-group">
+									<label>Reply date</label> <input class="form-control"
+										name="replyDate" value="">
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" id="modalModBtn" class="btn btn-warning">Modify</button>
+								<button type="button" id="modalRemoveBtn" class="btn btn-danger">Remove</button>
+								<button type="button" id="modalRegisterBtn"
+									class="btn btn-primary">Register</button>
+								<button type="button" id="modalCloseBtn" class="btn btn-default"
+									data-dismiss="modal">Close</button>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+					<!-- /.modal-dialog -->
 				</div>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-	aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myModalLabel">REPLY MODAL</h4>
-			</div>
-			<div class="modal-body">
-				<div class = "form-group">
-					<label>Reply</label>
-					<input class="form-control" name="reply" value="New Reply!!!">
-				</div>
-				<div class = "form-group">
-					<label>Replyer</label>
-					<input class="form-control" name="replyer" value="replyer">
-				</div>
-				<div class = "form-group">
-					<label>Reply date</label>
-					<input class= "form-control" name="replyDate" value="">
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" id = "modalModBtn" class="btn btn-warning">Modify</button>
-				<button type="button" id = "modalRemoveBtn" class="btn btn-danger">Remove</button>
-				<button type="button" id = "modalRegisterBtn" class="btn btn-primary">Register</button>
-				<button type="button" id = "modalCloseBtn" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+				<!-- /.modal -->
 				<!-- /#page-wrapper -->
-				
-<script type="text/javascript" src="/resources/js/reply.js"></script>
-<script type="text/javascript">
+
+				<script type="text/javascript" src="/resources/js/reply.js"></script>
+				<script type="text/javascript">
 $(document).ready(function() {
-	console.log(replyService);
+	console.log("댓글 replyService : "+ replyService);
 	var bnoValue = '<c:out value="${board.bno}"/>';
 
 	//댓글 등록 테스트(replyService)
@@ -171,16 +176,74 @@ $(document).ready(function() {
 	}); */
 
 	//특정 댓글 조회 테스트(replyService)
- replyService.get(11, function(data) {
+	/* replyService.get(11, function(data) {
 	 console.log("aaaaaa");
 	console.log(data);
 	});
+	 */
+ 
+ 	//댓글의 페이지 번호 처리
+	var pageNum = 1;
+	var replyPageFooter = $(".panel-footer");
+	function showReplyPage(replyCnt) {
+		var endNum = Math.ceil(pageNum / 5.0) * 10;
+		var startNum = endNum - 9;
+		
+		var prev = startNum != 1;
+		var next = false;
+		
+		if(endNum * 5 >= replyCnt) {
+			endNum = Math.ceil(replyCnt/5.0);
+		}
+		
+		if(endNum * 5 < replyCnt) {
+			next = true;
+		}
+		
+		var str = "<ul class='pagination pull-right'>";
+		if(prev) {
+			str += "<li class='page-item'><a class='page-link' href='"+(startNum-1)+"'>Previous</a></li>";
+		}
+		
+		for(var i=startNum ; i<=endNum; i++){
+			var active = pageNum == i? "active":"";
+			str+="<li class='page-item "+active+" '><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+		}
+		
+		if(next) {
+			str+= "<li class='page-item'><a class='page-link' href='"+(endNum+1) + "'>Next</a></li>";
+		}
 
+		str += "</ul></div>";
+		console.log(str);
+		
+		replyPageFooter.html(str);
+	}
+	replyPageFooter.on("click", "li a", function(e) {
+		e.preventDefault();
+		console.log("page click");
+		var targetPageNum = $(this).attr("href");
+		console.log("targetPageNum : " + targetPageNum);
+		pageNum = targetPageNum;
+		showList(pageNum);
+	});
+	
 	var replyUL = $(".chat");
 	showList(1);
 
-	function showList(page) //해당 게시글의 댓글을 가져온 후 <li>태그를 만들어서 화면에 출력
-		{replyService.getList( { bno : bnoValue, page : page || 1}, function(list) {
+	function showList(page){ //해당 게시글의 댓글을 가져온 후 <li>태그를 만들어서 화면에 출력
+		console.log("show list " + page);
+		replyService.getList( { bno : bnoValue, page : page || 1}, function(replyCnt,list) {
+			
+			console.log("replyCnt : " + replyCnt);
+			console.log("list : " + list);
+			console.log(list);
+			
+			if(page == 0) {
+				pageNum = Math.ceil(replyCnt/5.0); //한 페이지에 5개씩
+				showList(pageNum);
+				return;
+			}
 			var str = "";
 			if (list == null || list.length == 0) {
 				replyUL.html("");
@@ -193,8 +256,10 @@ $(document).ready(function() {
 				str += "            <p>" + list[i].reply + "</p></div></li>";
 			}
 			replyUL.html(str);
-	});//function call
-}//showList
+			showReplyPage(replyCnt);
+		
+		});//function call
+	}//showList
 	var modal = $(".modal");
 	var modalInputReply = modal.find("input[name='reply']");
 	var modalInputReplyer = modal.find("input[name='replyer']");
@@ -223,13 +288,16 @@ $(document).ready(function() {
 			modal.find("input").val(""); //댓글 등록이 정상적으로 이뤄지면, 내용을 지움
 			modal.modal("hide"); //모달창 닫음
 			
-			showList(1);
+			showList(0); //새로운 댓글을 추가하면 page값을 0으로 전송하고, 댓글의 전체 숫자를 파악한 후에 페이지 이동
+			//showList(1);
 		});
 	});
 	 $(".chat").on("click", "li", function(e){
 			var rno= $(this).data("rno");
 			modalInputReplyDate.closest("div").show();
 			replyService.get(rno, function(reply){
+				console.log("댓글6. reply.js에서 replyVO를 reply로 받아옴")
+		 		console.log("rno"+reply.rno+" 댓글 클릭 >> " );
 				modalInputReply.val(reply.reply);
 				modalInputReplyer.val(reply.replyer);
 				modalInputReplyDate.val(replyService.displayTime(reply.replyDate)).attr("readonly", "readonly");
@@ -249,7 +317,7 @@ $(document).ready(function() {
 		replyService.update(reply, function(result){
 			alert(result);
 			modal.modal("hide");
-			showList(1);
+			showList(pageNum);
 		});
 	});
 		
@@ -259,13 +327,14 @@ $(document).ready(function() {
 		replyService.remove(rno, function(result){
 			alert(result);
 			modal.modal("hide");
-			showList(1);
+			showList(pageNum);
 		});
 	});
+	
 
 });
 </script>
-<script type="text/javascript">
+				<script type="text/javascript">
 	$(document).ready(function() {
 		var operForm = $("#operForm");
 		$('button[data-oper="modify"]').on(
@@ -283,6 +352,6 @@ $(document).ready(function() {
 
 
 
-<%@include file="../includes/footer.jsp"%>
-</body>
+				<%@include file="../includes/footer.jsp"%>
+				</body>
 </html>

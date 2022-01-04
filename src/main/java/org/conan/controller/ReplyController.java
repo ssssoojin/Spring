@@ -1,8 +1,7 @@
 package org.conan.controller;
 
-import java.util.List;
-
 import org.conan.domain.Criteria;
+import org.conan.domain.ReplyPageDTO;
 import org.conan.domain.ReplyVO;
 import org.conan.service.ReplyService;
 import org.springframework.http.HttpStatus;
@@ -43,21 +42,23 @@ public class ReplyController {
 	@GetMapping(value="/pages/{bno}/{page}", produces= {
 			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE
 	})
-	public ResponseEntity<List<ReplyVO>> getList(
+	public ResponseEntity<ReplyPageDTO> getList(
 			@PathVariable("page") int page,
 			@PathVariable("bno") Long bno
 			) {
-		log.info("getList...............");
 		Criteria cri = new Criteria(page, 5);
-		log.info("cri : "+cri);
-		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
+		log.info("1. get Reply List bno : " + bno);
+		log.info("댓글 cri : " + cri);
+		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
 	}
 	//댓글의 조회
 	@GetMapping(value="/{rno}", produces= {
 			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE
 	})
 	public ResponseEntity<ReplyVO> get(@PathVariable("rno") Long rno ) {
-		log.info("get : " + rno);
+		log.info("댓글4. controller get으로 옴");
+		log.info("get>> rno: " + rno);
+		log.info("ReplyVO 반환");
 		return new ResponseEntity<>(service.get(rno), HttpStatus.OK);
 	}
 	//댓글의 삭제

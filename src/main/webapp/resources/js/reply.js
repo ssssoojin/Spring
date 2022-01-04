@@ -29,7 +29,8 @@ var replyService = (function() {
 		$.getJSON("/replies/pages/" + bno + "/" + page + ".json",
 			function(data) {
 				if(callback) {
-					callback(data);
+					//callback(data); // 댓글 목록만 가져오는 경우
+					callback(data.replyCnt, data.list); // 댓글 숫자와 목록을 가져오는 경우
 				}
 			}).fail(function(xhr, status, err) {
 				if(error) {
@@ -76,8 +77,12 @@ var replyService = (function() {
 	}//update
 	
 	function get(rno, callback, error) {
+		console.log("댓글2. get(reply.js)")
+		console.log("댓글3. controller 작동(ReplyController.java)")
+		//컨트롤러 get으로 이동
 		$.get("/replies/" + rno + ".json", function(result) {
 			if(callback) {
+				console.log("댓글5. 컨트롤러에서 replyVO받아옴")
 				callback(result);
 			}
 		}).fail(function(xhr, status, err) {
