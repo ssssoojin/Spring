@@ -156,14 +156,15 @@
 <!-- /.row -->
 
 <!-- /#page-wrapper -->
-
+<%response.setHeader("Cache-Control","no-store");%>  
 <script type="text/javascript">
-	$(document).ready(
-			function() {
+	$(document).ready(function() {
+
 				var result = '<c:out value="${result}"/>';
 				//모달 보여주기
 				checkModal(result);
 				history.replaceState({}, null, null) //오류 잡는거 
+
 				function checkModal(result) {
 					if (result === '' || history.state) {
 						return;
@@ -182,16 +183,20 @@
 	var actionForm = $("#actionForm");
 
 	$(".paginate_button a").on("click", function(e) {
+		
 		e.preventDefault(); //전송을 막음
 		console.log('click');
 		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+		actionForm.attr("action", "/board/list");
 		actionForm.submit();
 	});
 
 	$(".move").on("click",function(e) {
 				e.preventDefault();
-				actionForm.append("<input type='hidden' name='bno' value='"
+				actionForm.find('#bno').remove();
+				actionForm.append("<input id='bno' type='hidden' name='bno' value='"
 						+ $(this).attr("href") + "'>");
+			
 				actionForm.attr("action", "/board/get");
 				actionForm.submit();
 			});
