@@ -48,6 +48,7 @@
 									<%-- <td><a href="/board/get?bno=${list.bno}">${list.title}</a></td> --%>
 									<td><a class='move' href='<c:out value="${list.bno}"/>'>
 											<c:out value="${list.title}" />
+											<b>[  <c:out value="${list.replyCnt}" />  ]</b>
 									</a></td>
 
 									<td>${list.writer}</td>

@@ -6,8 +6,10 @@ import org.conan.domain.Criteria;
 import org.conan.domain.ReplyPageDTO;
 import org.conan.domain.ReplyVO;
 import org.conan.mapper.ReplyMapper;
+import org.conan.persistence.BoardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -18,8 +20,9 @@ public class ReplyServiceImpl implements ReplyService{
 	
 	@Setter(onMethod_ = @Autowired)
 	private ReplyMapper mapper;
+	private BoardMapper boardMapper;
 	
-	
+	@Transactional
 	@Override
 	public int register(ReplyVO vo) {
 		log.info("register......" + vo);
@@ -38,6 +41,7 @@ public class ReplyServiceImpl implements ReplyService{
 		return mapper.update(vo);
 	}
 
+	@Transactional
 	@Override
 	public int remove(Long rno) {
 		log.info("remove......" + rno);
