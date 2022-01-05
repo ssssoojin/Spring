@@ -46,12 +46,14 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<BoardVO> getList() {
 		log.info("getList.........");
+		log.info("service) mapper로 이동=============>");
 		return mapper.getList();
 	}
 	
 	@Override
 	public List<BoardVO> getList(Criteria cri){
 		log.info("getList with criteria : "+cri);
+		
 		return mapper.getListWithPaging(cri);
 	}
 	

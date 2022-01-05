@@ -27,6 +27,8 @@ public class BoardController {
 	public void list(Criteria cri, Model model) {
 
 		log.info("list: " + cri);
+		log.info("controller) BoardServiceImpl의 getList로===================>");
+		log.info("list에 getList(cri)-->리턴값이 boardVO임");
 		model.addAttribute("list", service.getList(cri));
 		// model.addAttribute("pageMaker", new PageDTO(cri, 123));
 
