@@ -3,6 +3,7 @@ package org.conan.controller;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +58,11 @@ public class UploadController {
 			log.info("Upload File Name : " + multipartFile.getOriginalFilename());
 			log.info("Upload File Size : " + multipartFile.getSize());
 
-			File saveFile = new File(uploadPath, multipartFile.getOriginalFilename());
+			//파일명 랜덤생성 (UUID를 이용해서 고유한 파일명 생성)
+			UUID uuid = UUID.randomUUID();
+			String uploadFileName = multipartFile.getOriginalFilename();
+			uploadFileName = uuid.toString() + "_" + uploadFileName; //랜덤생성 + 파일이름 저장
+			File saveFile = new File(uploadPath, uploadFileName);
 			try {
 				multipartFile.transferTo(saveFile);
 			} catch (Exception e) {
