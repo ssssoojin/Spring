@@ -132,10 +132,10 @@ $(document).ready(function(){
 		       //첨부파일이 업로드된 후에 생기는 이미지 파일 옆에 'x' 표시를 추가
 		       str += "<li><a href=\"javascript:showImage(\'"
 	    		   +originPath+"\')\"><img src='/display?fileName="+fileCallPath+"'></a>"
-	    				   + "<span data-file=\'" + fileCallPath + "\' data-type='image'> x </span><li>";
+	    				   + "<span data-file=\'" + fileCallPath + "\' data-type='image'> x </span></li>";
 		     }
-			uploadResult.append(str);
 		   });
+			uploadResult.append(str);
 		};//showUploadedFile
 		
 		$(".uploadResult").on("click", "span", function(e){
