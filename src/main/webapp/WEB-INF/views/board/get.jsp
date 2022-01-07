@@ -4,6 +4,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <title>Get</title>
+<style>
+.uploadResult {
+	width: 100%;
+	background-color: gray;
+}
+
+.uploadResult ul {
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.uploadResult ul li {
+	list-style: none;
+	padding: 10px;
+	align-content: center;
+	text-align: center;
+}
+
+.uploadResult ul li img {
+	width: 100px;
+}
+
+.uploadResult ul li span {
+	color: white;
+}
+
+.bigPictureWrapper {
+	position: absolute;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	top: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: gray;
+	z-index: 100;
+	background: rgba(255, 255, 255, 0.5);
+}
+
+.bigPicture {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bigPicture img {
+	width: 600px;
+}
+</style>
 <%@include file="../includes/header.jsp"%>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <!-- 푸터에 있음 -->
@@ -40,7 +92,12 @@
 						<label>Writer</label><input class="form-control" name="writer"
 							value='<c:out value="${board.writer}"/>' readonly="readonly">
 					</div>
-
+					
+						<div class='uploadResult'>
+							<ul>
+							</ul>
+						</div>
+					
 
 					<%-- <button data-oper="modify" class="btn btn-default" onclick="location.href='/board/modify?bno=<c:out value="${board.bno}"/>'">Modify</button>
 					<button data-oper="list" class="btn btn-default" onclick="location.href='/board/list'">List</button> --%>
@@ -54,17 +111,22 @@
 						<input type="hidden" name="amount" value="${cri.amount}">
 						<input type="hidden" name="type" value="${cri.type}"> <input
 							type="hidden" name="keyword" value="${cri.keyword}">
-
+					
 						<button data-oper="modify"
 							class="btn btn-outline btn-primary btn-sm">Modify</button>
 						<button data-oper="list" class="btn btn-outline btn-info btn-sm">List</button>
 					</form>
-				</div>
 				<!-- /.panel-body -->
 			</div>
 
 			<!-- /.panel -->
 		</div>
+					<!--첨부파일 -->
+					<div class='bigPictureWrapper'>
+						<div class='bigPicture'></div>
+					</div>
+				</div>
+
 		<!-- /.col-lg-12 -->
 		<div class="col-lg-12">
 			<div class="panel panel-default">
@@ -137,10 +199,85 @@
 
 				<script type="text/javascript" src="/resources/js/reply.js"></script>
 				<script type="text/javascript">
-$(document).ready(function() {
+				
+$(document).ready(function() {//즉시 실행 함수
+	var operForm = $("#operForm");
+	$('button[data-oper="modify"]').on(
+			"click",function(e) {
+				operForm.attr("action","/board/modify").submit();
+			});
+	$('button[data-oper="list"]').on(
+			"click",function(e) {
+				operForm.find("#bno").remove();
+				operForm.attr("action","/board/list");
+				operForm.submit();
+			});
+
 	console.log("댓글 replyService : "+ replyService);
 	var bnoValue = '<c:out value="${board.bno}"/>';
+	//가장 먼저 해당 게시물의 댓글을 가져오는 부분(자동)
+	
+	$.getJSON("/board/getAttachList", {bno:bnoValue}, function(arr) { // url, data, success
+            console.log(arr);
+            var str = "";
+            $(arr).each(function(i, obj) {
+               if(!obj.fileType) { // 이미지가 아닌 경우
+                  
+                  var fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+                  str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div>";
+                  str += "<img src='/resources/images/attach.png'>";
+                  str += "</div></li>";
+               } else {
+                  
+                  // 썸네일 나오게 처리
+                  var fileCallPath = encodeURIComponent(obj.uploadPath +  "/s_" + obj.uuid + "_" + obj.fileName);
+                  var originPath = obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName;
+                  console.log("originPath1 : " + originPath);
+                  originPath = originPath.replace(new RegExp(/\\/g), "/"); // \를 /로 통일
+                  console.log("originPath2 : " + originPath);
+                  str += "<li data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div>";
+                  str += "<a href=\"javascript:showImage(\'" + originPath + "\')\"><img src='/display?fileName=" + fileCallPath + "'></a>";
+                  str += "</div></li>";
+               }
+            });
+            $(".uploadResult ul").html(str);
+         }); // getJSON
+	 $(".uploadResult").on("click","li", function(e){
+	      
+		    console.log("view image");
+		    
+		    var liObj = $(this);
+		    
+		    var path = encodeURIComponent(liObj.data("path")+"/" + liObj.data("uuid")+"_" + liObj.data("filename"));
+		    
+		    if(liObj.data("type")){
+		      showImage(path.replace(new RegExp(/\\/g),"/"));
+		    }else {
+		      //download 
+		      self.location ="/download?fileName="+path
+		    }
+		    
+		    
+		  });
+		  
+	 		//이미지 크게 보여주기
+		  function showImage(fileCallPath){
+		    //alert(fileCallPath);
+		    
+		    $(".bigPictureWrapper").css("display","flex").show();
+		    
+		    $(".bigPicture")
+		    .html("<img src='/display?fileName="+fileCallPath+"' >")
+		    .animate({width:'100%', height: '100%'}, 1000);
+		    
+		  }
 
+		  $(".bigPictureWrapper").on("click", function(e){
+		    $(".bigPicture").animate({width:'0%', height: '0%'}, 1000);
+		    setTimeout(function(){
+		      $('.bigPictureWrapper').hide();
+		    }, 1000);
+		  });
 	//댓글 등록 테스트(replyService)
 	/*replyService.add(
 			{reply: "JS Test", replyer:"tester", bno:bnoValue} //댓글 데이터
@@ -334,24 +471,6 @@ $(document).ready(function() {
 
 });
 </script>
-				<script type="text/javascript">
-	$(document).ready(function() {
-		var operForm = $("#operForm");
-		$('button[data-oper="modify"]').on(
-				"click",function(e) {
-					operForm.attr("action","/board/modify").submit();
-				});
-		$('button[data-oper="list"]').on(
-				"click",function(e) {
-					operForm.find("#bno").remove();
-					operForm.attr("action","/board/list");
-					operForm.submit();
-				});
-	});
-</script>
-
-
-
-				<%@include file="../includes/footer.jsp"%>
+<%@include file="../includes/footer.jsp"%>
 				</body>
 </html>

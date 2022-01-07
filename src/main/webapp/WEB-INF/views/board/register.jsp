@@ -31,29 +31,6 @@
 	color: white
 }
 
-.bigPictureWrapper {
-	position: absolute;
-	display: none;
-	justify-content: center;
-	align-items: center;
-	top: 0%;
-	width: 100%;
-	height: 100%;
-	background-color: gray;
-	z-index: 100;
-	background: rgba(255, 255, 255, 0.5);
-}
-
-.bigPicture {
-	position: relative;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.bigPicture img {
-	width: 400px;
-}
 </style>
 <%@include file="../includes/header.jsp"%>
 
@@ -150,7 +127,7 @@ $(document).ready(function(e){
 		  $(uploadResultArr).each(function(i, obj){
 			  
 			  if(!obj.image){//이미지 아닌경우
-				  var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);           
+				  var fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);           
 		          
 				  str += "<li data-path = '" + obj.uploadPath + "' data-uuid = '" + obj.uuid + "'data-filename = '"
 					+ obj.fileName + "'data-type = '" + obj.fileType + "'><div>";

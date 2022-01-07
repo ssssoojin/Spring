@@ -1,9 +1,18 @@
 package org.conan.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import org.conan.domain.BoardAttachVO;
 import org.conan.domain.BoardVO;
 import org.conan.domain.Criteria;
 import org.conan.domain.PageDTO;
 import org.conan.service.BoardService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.AllArgsConstructor;
@@ -86,14 +96,18 @@ public class BoardController {
 		// 삭제 처리
 		@PostMapping("/remove")
 		public String remove(
+				
 				@RequestParam("bno") Long bno,
-				Criteria cri,  //추가
+				@ModelAttribute("cri") Criteria cri,  
 				RedirectAttributes rttr) 
 		{
 			log.info("remove..." + bno);
+			List<BoardAttachVO> attachList = service.getAttachList(bno);
 			if (service.remove(bno)) {
+				deleteFiles(attachList);  // 첨부파일 삭제
 				rttr.addFlashAttribute("result", "success");
 			}
+	
 			rttr.addAttribute("pageNum", cri.getPageNum());
 			rttr.addAttribute("amount", cri.getAmount());
 			rttr.addAttribute("type", cri.getType());  
@@ -105,6 +119,44 @@ public class BoardController {
 	public void register() {
 
 	}
+	//게시물 번호를 이용해서 첨부파일과 관련된 데이터를 JSON으로 반환하도록 처리
+	@GetMapping(value = "/getAttachList",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>>getAttachList(Long bno){
+		log.info("getAttachList" + bno);
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
+	}
+	//서버에 업로드된 파일들을 삭제하기 위한 메소드
+//	BoardController 는 데이터베이스 삭제를 먼저 호출하고, 이후 파일을 삭제해야 합니다.
+//	파일 삭제 시, 해당 게시물의 첨부파일 목록이 필요합니다.
+//
+//	<작업순서>
+//	1. 게시물의 첨부파일 정보를 준비
+//	2. 데이터베이스에서 해당 게시물과 첨부파일 데이터 삭제
+//	3. 첨부파일 목록을 이용해서 해당 폴더에서 썸네일 이미지와 일반 파일 삭제.
+
+	private void deleteFiles(List<BoardAttachVO> attachList) {
+		if(attachList == null || attachList.size() == 0) {
+			return;
+		}
+		log.info("delete attach files........");
+		log.info(attachList);
+		
+		attachList.forEach(attach -> {
+			try {
+				Path file = Paths.get("c:\\upload\\"+attach.getUploadPath()+"\\"+attach.getUuid()+"_"+attach.getFileName());
+				Files.deleteIfExists(file);
+				if(Files.probeContentType(file).startsWith("image")) {
+					Path thumbNail = Paths.get("c:\\upload\\"+attach.getUploadPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
+					Files.delete(thumbNail);
+				}
+			} catch(Exception e) {
+				log.error("delete file error" + e.getMessage());
+			}
+		});
+	}
+
 	
 	
 }
