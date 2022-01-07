@@ -177,7 +177,7 @@ $(document).ready(function(){
 			processData : false,// 전달할 데이터를 query string을 만들지 말 것
 			contentType : false,// 얘네 두개는 무조건 false줘야하고 의미 몰라도 됨 (필수사항이라고 알기)
 			data : formData,//전달할 데이터
-			type : 'POST',
+			type : 'POST',//전송방식
 			success : function(result){
 				//alert("Uploaded");
 				console.log(result);

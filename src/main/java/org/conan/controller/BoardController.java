@@ -40,6 +40,9 @@ public class BoardController {
 	@PostMapping("/register")
 	public String register(BoardVO board, RedirectAttributes rttr) {
 		log.info("register : "+ board);
+		if(board.getAttachList() != null) {
+			board.getAttachList().forEach(attach -> log.info(attach));
+		}
 		service.register(board);
 		rttr.addFlashAttribute("result",board.getBno()); //result로 번호 보내주기
 		return "redirect:/board/list"; //redirect:를 하지 않는 경우, 새로고침시 도배
