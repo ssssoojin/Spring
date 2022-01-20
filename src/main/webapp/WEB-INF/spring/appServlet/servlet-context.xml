@@ -39,12 +39,6 @@
 
 	<context:component-scan
 		base-package="org.conan.controller" />
-	<context:component-scan
-		base-package="org.conan.persistence" />
-	<context:component-scan
-		base-package="org.conan.service" />
-	<context:component-scan
-		base-package="org.conan.mapper" />
 
 
 
