@@ -98,4 +98,17 @@ public class SampleController {
 		log.info("size : " + file.getSize());
 	}
 	}
+	
+	@GetMapping("/all")
+	public void doAll() {
+		log.info("누구나 접근 가능");
+	}
+	@GetMapping("/member")
+	public void doMember() {
+		log.info("로그인한 회원들만 접근가능");
+	}
+	@GetMapping("/admin")
+	public void doAdmin() {
+		log.info("관리자들만 접근 가능");
+	}
 }

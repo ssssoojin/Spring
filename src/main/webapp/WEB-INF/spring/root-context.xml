@@ -54,11 +54,7 @@
 		base-package="org.conan.task"></context:component-scan> 
  	<task:annotation-driven />
  	
- 	 <security:http>
- 	 <security:form-login/>
- 	 </security:http>
- 	<security:authentication-manager>
-	</security:authentication-manager>
+ 
 	
 
 	
