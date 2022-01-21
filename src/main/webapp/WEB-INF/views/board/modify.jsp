@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
 <html lang="en">
 <title>Modify</title>
@@ -111,11 +112,18 @@
 								readonly="readonly">
 						</div>
 
-
-
-						<button type="submit" data-oper="modify" class="btn btn-info">Modify</button>
-						<button type="submit" data-oper="remove" class="btn btn-danger">Remove</button>
-						<button type="submit" data-oper="list" class="btn btn-success">List</button>
+						 <!-- 로그인한 사용자와 게시물의 작성자인 경우만 수정과 삭제 버튼이 보이도록 검증-->
+                <sec:authentication property="principal" var="pinfo"/>
+                    <sec:authorize access="isAuthenticated()">
+                        <c:if test="${pinfo.username eq board.writer }">
+                    <button type="submit" data-oper='modify' class="btn btn-default">Modify</button> 
+                    <button type="submit" data-oper='remove' class="btn btn-danger">Remove</button>
+                        </c:if>
+                    </sec:authorize>
+                    <button type="submit" data-oper='list' class="btn btn-info">List</button>
+                    
+                        <!--  csrf 공격 방어를 위해 동적 생성 -->
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }" />
 					</form>
 				</div>
 				<!-- /.table-responsive -->
@@ -161,9 +169,62 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		
-		var bnoValue = '<c:out value = "${board.bno}"/>';
+		 var formObj = $("form");
+		 
+			$('button').on("click", function(e) {
+				e.preventDefault();//전송을 막음
+				var operation = $(this).data("oper");
+				console.log("operation : "+operation);
+				
+				if (operation === 'remove') {
+					
+					formObj.attr("action", "/board/remove");
+					
+				} else if (operation === 'list') {
+					formObj.attr("action", "/board/list").attr("method", "get");
+
+					//수정/삭제 취소 후, 목록 페이지로 이동
+					//pageNum 과 amount 만 사용하므로,
+					//<form> 태그에서 필요한 부분만 잠시 복사(clone) 해서 보관해 두고, 
+					//<form> 태그 안에 내용은 지워(empty)버립니다.
+					//이후에 다시 필요한 태그들만 추가해서 '/board/list' 를 호출
+					formObj.attr("action", "/board/list").attr("method", "get");
+
+					var pageNumTag = $("input[name='pageNum']").clone(); //잠시 보관용
+					var amountTag = $("input[name='amount']").clone();
+					var keywordTag = $("input[name='keyword']").clone();
+					var typeTag = $("input[name='type']").clone();
+
+					formObj.empty(); //제거
+
+					formObj.append(pageNumTag); //필요한 태그들만 추가
+					formObj.append(amountTag);
+					formObj.append(keywordTag);
+					formObj.append(typeTag);
+					
+				} else if (operation === 'modify') {
+				      console.log("submit clicked");
+				      
+				      var str = "";
+				      
+				      $(".uploadResult ul li").each(function(i,obj){
+				         var jobj = $(obj);
+				         console.dir(jobj);
+				         
+				         str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jobj.data("filename")+"'>";
+				         str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'>";
+				         str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jobj.data("path")+"'>";
+				         str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+jobj.data("type")+"'>";
+				      });
+				      formObj.append(str);
+				   }
+
+				formObj.submit();
+		});
+			
+		var bno = '<c:out value = "${board.bno}"/>';
 		
-		$.getJSON("/board/getAttachList", {bno:bnoValue}, function(arr){
+		$.getJSON("/board/getAttachList", {bno:bno}, function(arr){
 			console.log(arr);
 			var str = "";
 			
@@ -172,8 +233,7 @@
 				if(!obj.fileType){
 					// 일반 파일
 					 var fileCallPath =  encodeURIComponent( obj.uploadPath+"/"+ obj.uuid +"_"+obj.fileName);            
-			            var fileLink = fileCallPath.replace(new RegExp(/\\/g),"/");
-			            
+			          
 					  str += "<li data-path='" + obj.uploadPath + "' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.fileType+"'>";
 			          str += "<div>";
 			          str += "<span> "+ obj.fileName+"</span>";
@@ -192,6 +252,7 @@
 			          str += "</div>";
 			          str +"</li>";
 				}
+			});
 		
 			$(".uploadResult ul").html(str);
 		});
@@ -222,7 +283,10 @@
 			    }
 			    return true;
 			  }
-			  
+			  var cloneObj = $(".uploadDiv").clone();
+
+			  var csrfHeaderName = "${_csrf.headerName}";
+			    var csrfTokenValue = "${_csrf.token}";
 			  $("input[type='file']").change(function(e){
 
 			    var formData = new FormData();
@@ -244,6 +308,8 @@
 			      url: '/uploadAjaxAction',
 			      processData: false, 
 			      contentType: false,
+			      beforeSend: function(xhr){
+			            xhr.setRequestHeader(csrfHeaderName, csrfTokenValue)},
 			      data:formData,
 			      type: 'POST',
 			      dataType:'json',
@@ -256,10 +322,10 @@
 			    
 			  });  
 		  
+	            var uploadResult = $(".uploadResult ul");
 		  function showUploadFile(uploadResultArr){
 	            
 	            if(!uploadResultArr || uploadResultArr.length == 0){return;}
-	            var uploadUL = $(".uploadResult ul");
 	            var str = "" ;
 	            $(uploadResultArr).each(function(i,obj){
 	               
@@ -291,64 +357,31 @@
 	                        +"<span data-file=\'"+fileCallPath+"\' data-type='image'>X</span></li>"; */
 	               }
 	            });
-	            uploadUL.append(str);
+	            uploadResult.append(str);
 	            //uploadResult.append(str);
 	         }
+
+		  $(".uploadResult").on("click", "button", function(e){
+			  console.log("delete file");
+			  
+			  var targetFile = $(this).data("file");
+			  var type = $(this).data("type");
+			  var targetLi = $(this).closest("li");
+			  
+			  $.ajax({
+			  	url : 'deleteFile',
+			  	 beforeSend: function(xhr){
+			            xhr.setRequestHeader(csrfHeaderName, csrfTokenValue)},
+			  	data : {fileName : targetFile, type : type},
+			  	dataType : 'text',
+			  	type : 'POST',
+			  		success : function(result) {
+			  			alert(result);
+			  			targetLi.remove();
+			  		}
+			  });//$.ajax
+		  });//uploadResult
 		
-		 var formObj = $("form");
-		 
-		$('button').on("click", function(e) {
-			e.preventDefault();//전송을 막음
-			var operation = $(this).data("oper");
-			console.log("operation : "+operation);
-			
-			if (operation === 'remove') {
-				
-				formObj.attr("action", "/board/remove");
-				
-			} else if (operation === 'list') {
-				formObj.attr("action", "/board/list").attr("method", "get");
-
-				//수정/삭제 취소 후, 목록 페이지로 이동
-				//pageNum 과 amount 만 사용하므로,
-				//<form> 태그에서 필요한 부분만 잠시 복사(clone) 해서 보관해 두고, 
-				//<form> 태그 안에 내용은 지워(empty)버립니다.
-				//이후에 다시 필요한 태그들만 추가해서 '/board/list' 를 호출
-				formObj.attr("action", "/board/list").attr("method", "get");
-
-				var pageNumTag = $("input[name='pageNum']").clone(); //잠시 보관용
-				var amountTag = $("input[name='amount']").clone();
-				var keywordTag = $("input[name='keyword']").clone();
-				var typeTag = $("input[name='type']").clone();
-
-				formObj.empty(); //제거
-
-				formObj.append(pageNumTag); //필요한 태그들만 추가
-				formObj.append(amountTag);
-				formObj.append(keywordTag);
-				formObj.append(typeTag);
-				
-			} else if (operation === 'modify') {
-			      console.log("submit clicked");
-			      
-			      var str = "";
-			      
-			      $(".uploadResult ul li").each(function(i,obj){
-			         var jobj = $(obj);
-			         console.dir(jobj);
-			         
-			         str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jobj.data("filename")+"'>";
-			         str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'>";
-			         str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jobj.data("path")+"'>";
-			         str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+jobj.data("type")+"'>";
-			      });
-			      formObj.append(str).submit();
-			   }
-
-			formObj.submit();
-		
-	});
-});
 	});
 </script>
 

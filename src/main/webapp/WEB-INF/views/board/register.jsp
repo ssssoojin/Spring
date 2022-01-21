@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
 <html lang="en">
 <title>Register</title>
@@ -30,7 +32,6 @@
 .uploadResult ul li span {
 	color: white
 }
-
 </style>
 <%@include file="../includes/header.jsp"%>
 
@@ -48,19 +49,25 @@
 				<div class="panel-heading">Board Register (게시글 등록)</div>
 				<!-- /.panel-heading -->
 				<div class="panel-body">
-				
+
 					<form role="form" action="/board/register" method="post">
-						<div class = "form-group">
+						<div class="form-group">
 							<label>Title</label><input class="form-control" name="title">
 						</div>
-						<div class = "form-group">
-							<label>Content</label><textarea class="form-control" name="content" rows="3"></textarea>
+						<div class="form-group">
+							<label>Content</label>
+							<textarea class="form-control" name="content" rows="3"></textarea>
 						</div>
-						<div class = "form-group">
-							<label>Writer</label><input class="form-control" name="writer">
+						<div class="form-group">
+							<label>Writer</label> <input class="form-control" name="writer"
+								value='<sec:authentication property="principal.username"/>'
+								readonly="readonly">
 						</div>
-						<button type ="submit" class="btn btn-outline btn-danger">Submit</button>
-						<button type ="reset" class="btn btn-outline btn-warning">Reset</button>
+						<button type="submit" class="btn btn-outline btn-danger">Submit</button>
+						<button type="reset" class="btn btn-outline btn-warning">Reset</button>
+
+						<input type="hidden" name="${_csrf.parameterName}"
+							value="${_csrf.token }" />
 					</form>
 
 				</div>
@@ -71,28 +78,28 @@
 		<!-- /.panel -->
 	</div>
 	<!-- /.col-lg-6 -->
-	
-<!--첨부파일 -->
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-info">
-			<div class="panel-heading">File Attach</div>
-			<!-- /.panel-heading -->
-			<div class="panel-body">
-				<div class="form-group uploadDiv">
-					<input type="file" name="uploadFile" multiple>
+
+	<!--첨부파일 -->
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-info">
+				<div class="panel-heading">File Attach</div>
+				<!-- /.panel-heading -->
+				<div class="panel-body">
+					<div class="form-group uploadDiv">
+						<input type="file" name="uploadFile" multiple>
+					</div>
+					<div class="uploadResult">
+						<ul></ul>
+					</div>
 				</div>
-				<div class="uploadResult">
-		<ul></ul>
-	</div>
 			</div>
 		</div>
 	</div>
 </div>
-</div>
 <!-- /.row -->
 
-	
+
 
 <!-- /#page-wrapper -->
 <script>
@@ -162,7 +169,8 @@ $(document).ready(function(e){
 		  });
 			uploadUL.append(str);
 	  }
-		
+	 var csrfHeaderName = "${_csrf.headerName}";
+	    var csrfTokenValue = "${_csrf.token}";
 	  $(".uploadResult").on("click", "button", function(e){
 		  console.log("delete file");
 		  
@@ -172,6 +180,8 @@ $(document).ready(function(e){
 		  
 		  $.ajax({
 		  	url : 'deleteFile',
+		  	 beforeSend: function(xhr){
+		            xhr.setRequestHeader(csrfHeaderName, csrfTokenValue)},
 		  	data : {fileName : targetFile, type : type},
 		  	dataType : 'text',
 		  	type : 'POST',
@@ -205,6 +215,7 @@ $(document).ready(function(e){
 		});
 		
 	var cloneObj =$(".uploadDiv").clone();
+	
 	$("input[type = 'file']").change(function(e){
 		var formData = new FormData();
 		var inputFile = $("input[name='uploadFile']");
@@ -223,6 +234,8 @@ $(document).ready(function(e){
 			url : '/uploadAjaxAction',
 			processData : false,// 전달할 데이터를 query string을 만들지 말 것
 			contentType : false,// 얘네 두개는 무조건 false줘야하고 의미 몰라도 됨 (필수사항이라고 알기)
+			 beforeSend: function(xhr){
+		            xhr.setRequestHeader(csrfHeaderName, csrfTokenValue)},
 			data : formData,//전달할 데이터
 			type : 'POST',
 			success : function(result){

@@ -13,12 +13,14 @@ import org.conan.service.BoardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -47,6 +49,8 @@ public class BoardController {
 		model.addAttribute("pageMaker", new PageDTO(cri, total));
 
 	}
+	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/register")
 	public String register(BoardVO board, RedirectAttributes rttr) {
 		log.info("register : "+ board);
@@ -74,6 +78,7 @@ public class BoardController {
 		}
 		
 		// 수정처리
+		@PreAuthorize("principal.username == #board.writer")
 		@PostMapping("/modify")
 		public String modify(
 				BoardVO board, 
@@ -94,6 +99,7 @@ public class BoardController {
 		}	
 		
 		// 삭제 처리
+		 @PreAuthorize("principal.username == #writer")
 		@PostMapping("/remove")
 		public String remove(
 				
@@ -115,6 +121,7 @@ public class BoardController {
 
 			return "redirect:/board/list";
 		}
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/register")
 	public void register() {
 

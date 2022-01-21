@@ -1,0 +1,160 @@
+:root{
+	--body-background-color: #f5f6f7;
+	--font-color: #4e4e4e;
+	--main-gray-color : #d7dadb;
+	--main-pink-color: #fc7b70;
+	--main-pink-border-color: #fa8b85;
+	--main-gray-border-color: #ced1d2;
+}
+
+
+*{
+	margin:0;
+	padding:0;
+}
+
+body{
+	background:var(--body-background-color);
+}
+
+.main-container{
+	width:100%;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	margin-top: 21px;
+}
+.main-container .main-wrap{
+	width:768px;
+
+}
+.main-container .main-wrap .sel-lang-wrap .lang-select
+{
+	width: 96px;
+	height: 30px;
+	color: var(--font-color);
+	border: solid 1px var(--border-gray-color);
+}
+.main-container .main-wrap .logo-wrap{
+	padding-top:55px;
+}
+.main-container .main-wrap .logo-wrap img
+{
+	width: 216px;
+	height: 216px;
+}
+
+.main-container .main-wrap header .sel-lang-wrap{
+	display:flex;
+	justify-content:flex-end;
+}
+
+.main-container .main-wrap header .logo-wrap{
+	display:flex;	
+	flex-direction: column;
+	align-items: center;
+}
+
+/* 로그인 실패시 경고글 */
+.login_warn{
+    margin-top: 30px;
+    text-align: center;
+    color : red;
+}
+
+.login-input-section-wrap{
+	padding-top: 60px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.login-input-wrap{
+	width: 465px;
+	height :48px;
+	border: solid 1px var(	--border-gray-color );
+	background: white;
+}
+.password-wrap{
+	margin-top: 13px;
+}
+.login-input-wrap input{
+	border: none;
+	width:430px;
+	margin-top: 10px;
+	font-size: 14px;
+	margin-left: 10px;
+	height:30px;
+}
+.login-button-wrap {
+	padding-top: 13px;
+}
+.login-button-wrap >.login_button {
+	width: 465px;
+	height :48px;
+	font-size: 18px;
+	background: var(--main-pink-color);
+	color: white;
+	border: solid 1px var(--main-pink-border-color);
+}
+.join-button-wrap {
+	padding-top: 13px;
+}
+.join-button-wrap >.join_button{
+	width: 465px;
+	height :48px;
+	font-size: 18px;
+	background: var(--main-grey-color);
+	color: black;
+	border: solid 1px var(--main-gray-border-color);
+}
+.login-stay-sign-in{
+	width: 465px;
+	height: 52px;
+	
+	display: flex;
+	font-size: 15px;
+	color: #4e4e4e;
+	align-items: center;
+	justify-content: flex-start;
+	border-bottom: solid 1px var(--border-gray-color);
+}
+.login-stay-sign-in i{
+	font-size: 25px;
+	color: #9ba1a3;
+}
+.login-stay-sign-in span{
+	padding-left: 5px;
+	line-height: 25px;
+}
+footer{
+   
+	padding-top: 45px;
+	padding-bottom: 15px;
+
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	width:768px;
+
+
+
+}
+.copyright-wrap{
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 15px;
+
+
+}
+footer .copyright-wrap span{
+	font-size: 35px;
+	line-height : 38px;
+	color: grey;
+}
+footer .copyright-wrap p{
+	font-size: 13px;
+	line-height: 15px;
+}

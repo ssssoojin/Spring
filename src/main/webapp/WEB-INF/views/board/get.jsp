@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
 <html lang="en">
 <title>Get</title>
@@ -92,12 +94,12 @@
 						<label>Writer</label><input class="form-control" name="writer"
 							value='<c:out value="${board.writer}"/>' readonly="readonly">
 					</div>
-					
-						<div class='uploadResult'>
-							<ul>
-							</ul>
-						</div>
-					
+
+					<div class='uploadResult'>
+						<ul>
+						</ul>
+					</div>
+
 
 					<%-- <button data-oper="modify" class="btn btn-default" onclick="location.href='/board/modify?bno=<c:out value="${board.bno}"/>'">Modify</button>
 					<button data-oper="list" class="btn btn-default" onclick="location.href='/board/list'">List</button> --%>
@@ -111,29 +113,36 @@
 						<input type="hidden" name="amount" value="${cri.amount}">
 						<input type="hidden" name="type" value="${cri.type}"> <input
 							type="hidden" name="keyword" value="${cri.keyword}">
-					
-						<button data-oper="modify"
-							class="btn btn-outline btn-primary btn-sm">Modify</button>
-						<button data-oper="list" class="btn btn-outline btn-info btn-sm">List</button>
-					</form>
-				<!-- /.panel-body -->
-			</div>
 
-			<!-- /.panel -->
-		</div>
-					<!--첨부파일 -->
-					<div class='bigPictureWrapper'>
-						<div class='bigPicture'></div>
-					</div>
+						<sec:authentication property="principal" var="pinfo" />
+						<sec:authorize access="isAuthenticated()">
+							<c:if test="${pinfo.username eq board.writer }">
+								<!-- 작성자와 동일한지 확인 -->
+								<button data-oper='modify' class="btn btn-default">Modify</button>
+							</c:if>
+						</sec:authorize>
+						<button data-oper='list' class="btn btn-info">List</button>
+					</form>
+					<!-- /.panel-body -->
 				</div>
+
+				<!-- /.panel -->
+			</div>
+			<!--첨부파일 -->
+			<div class='bigPictureWrapper'>
+				<div class='bigPicture'></div>
+			</div>
+		</div>
 
 		<!-- /.col-lg-12 -->
 		<div class="col-lg-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<i class="fa fa-comments fa-fw"></i>Reply
+					<sec:authorize access="isAuthenticated()">
 					<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New
 						Reply</button>
+						</sec:authorize>
 				</div>
 				<!-- /.panel-heading -->
 
@@ -405,15 +414,32 @@ $(document).ready(function() {//즉시 실행 함수
 	var modalModBtn = $("#modalModBtn");
 	var modalRemoveBtn = $("#modalRemoveBtn");
 	var modalRegisterBtn = $("#modalRegisterBtn");
-	
-	$("#addReplyBtn").on("click", function(e) {
-		modal.find("input").val("");
-		modalInputReplyDate.closest("div").hide();
-		modal.find("button[id!='modalCloseBtn']").hide();
-		
-		modalRegisterBtn.show();
-		$(".modal").modal("show");
-	});
+	 //작성자 null로 선언
+    var replyer = null;
+    
+    //로그인 확인하고, 로그인 사용자를 replyer에 넣는다
+    <sec:authorize access="isAuthenticated()">
+        replyer = '<sec:authentication property="principal.username"/>';
+    </sec:authorize>
+    
+    //ajax 전송시, 'x-csrf-token' 같은 헤더 정보를 추가해서 csrf 토큰값 전달
+    var csrfHeaderName = "${_csrf.headerName}";
+    var csrfTokenValue = "${_csrf.token}";
+    
+  //댓글 생성 누르면 기존 모달창 데이터 숨기기
+    $("#addReplyBtn").on("click", function(e) {
+        modal.find("input").val("");
+        modal.find("input[name='replyer']").val(replyer); //replyer (시큐리티 id가 담긴)
+        modalInputReplyDate.closest("div").hide();
+        modal.find("button[id !='modalCloseBtn']").hide();
+        
+        modalRegisterBtn.show();
+        
+        $(".modal").modal("show");
+    })
+       $(document).ajaxSend(function(e, xhr, options){
+        xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+    });   
 	modalRegisterBtn.on("click", function(e) {
 		var reply ={
 				reply: modalInputReply.val(),
@@ -471,6 +497,6 @@ $(document).ready(function() {//즉시 실행 함수
 
 });
 </script>
-<%@include file="../includes/footer.jsp"%>
+				<%@include file="../includes/footer.jsp"%>
 				</body>
 </html>
